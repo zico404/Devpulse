@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
 import { fetchRepoData, getCodeHealth } from "../utils/github";
+import { trackRepoSearch } from "../utils/tracker";
 
 export function useRepoData() {
   const [repoData, setRepoData] = useState(null);
@@ -25,6 +26,7 @@ export function useRepoData() {
 
       setRepoData(data);
       setCodeHealth(health);
+      trackRepoSearch(data.full_name, true);
 
       const repoEntry = {
         name: data.full_name,
@@ -54,6 +56,7 @@ export function useRepoData() {
       setError(err.message || "Failed to fetch repository data");
       setRepoData(null);
       setCodeHealth(null);
+      trackRepoSearch(url, false, err.message);
     } finally {
       setLoading(false);
     }

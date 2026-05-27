@@ -8,6 +8,7 @@ import Dependencies from "../components/Dependencies";
 import AISuggestions from "../components/AISuggestions";
 import { CardSkeleton, StatsSkeleton, ListSkeleton } from "../components/LoadingSkeleton";
 import { useRepoData } from "../hooks/useRepoData";
+import { trackSectionView } from "../utils/tracker";
 
 function DashboardContent({ activeSection, repoData, codeHealth, loading }) {
   const loadingSections = {
@@ -83,6 +84,11 @@ export default function Home() {
     } catch {}
   }, [mounted, fetchRepo]);
 
+  const handleSectionChange = useCallback((section) => {
+    setActiveSection(section);
+    trackSectionView(section);
+  }, []);
+
   const handleFetch = useCallback(
     (url) => { fetchRepo(url); if (!hasData) setActiveSection("overview"); },
     [fetchRepo, hasData]
@@ -91,7 +97,7 @@ export default function Home() {
   return (
     <Layout
       activeSection={activeSection}
-      onSectionChange={setActiveSection}
+      onSectionChange={handleSectionChange}
       repoName={repoData?.full_name}
     >
       {!hasData && !loading && (
