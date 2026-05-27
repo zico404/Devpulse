@@ -6,16 +6,13 @@ function getUrl() {
 export function trackEvent(type, metadata = {}) {
   try {
     const payload = { type, metadata, url: getUrl() };
-    if (navigator.sendBeacon) {
-      navigator.sendBeacon("/api/analytics/event", JSON.stringify(payload));
-    } else {
-      fetch("/api/analytics/event", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-        keepalive: true,
-      }).catch(() => {});
-    }
+    const body = JSON.stringify(payload);
+    fetch("/api/analytics/event", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+      keepalive: true,
+    }).catch(() => {});
   } catch {}
 }
 
